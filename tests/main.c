@@ -8,13 +8,33 @@
  *
  *      Starlight Physics is a free open source physics engine
 ********************************************************************/
-#include "Graphics.h"
-#include "Input.h"
+#include "Window.h"
+
+#include <signal.h>
+
+static void
+    OnSegfault(int fp_Signature)
+{
+    printf("[SEGMENTATION FAULT]: uh oh stinky uwu %d", fp_Signature);
+}
 
 int main(int argc, char** argv)
 {
-    SDL_Window* f_MainWindow = NULL;
-    CreateSDLWindow(&f_MainWindow, "Hello World!", 800, 600);
+    signal(SIGSEGV, OnSegfault);
+
+    SDL_Window* f_MainWindow = SDL_CreateWindow
+    (
+        "Hello World!",
+        800,
+        600,
+        SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE
+    );
+
+    if (not f_MainWindow)
+    {
+        printf("Window could not be created! SDL_Error: %s", SDL_GetError());
+        return EXIT_FAILURE;
+    }
 
     bool f_IsRunning = true;
 
@@ -23,5 +43,5 @@ int main(int argc, char** argv)
         STESTS_PollEvents(&f_IsRunning);
     }
 
-    return 0;
+    return EXIT_SUCCESS;
 }

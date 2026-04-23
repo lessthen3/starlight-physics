@@ -8,11 +8,17 @@
  *
  *      Starlight Physics is a free open source physics engine
 ********************************************************************/
-#include "Utils/Macros.h"
+#ifndef STARLIGHT_PHYSICS_STATUS_CODES_HG
+#define STARLIGHT_PHYSICS_STATUS_CODES_HG
 
-void 
-    SPHYS_hi()
+
+typedef enum
 {
+    STARLIGHT_OK = 0,
+    STARLIGHT_MEMORY_VIOLATION = 1 //hope this isnt necessary owo
 
-}
+} StarlightStatusCode;
+
+
+#endif /*STARLIGHT_PHYSICS_STATUS_CODES_HG*/
 

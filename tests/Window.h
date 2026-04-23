@@ -8,11 +8,19 @@
  *
  *      Starlight Physics is a free open source physics engine
 ********************************************************************/
-#ifndef STARLIGHT_TESTS_INPUT_H_G
-#define STARLIGHT_TESTS_INPUT_H_G
+#ifndef STARLIGHT_TESTS_GRAPHICS_HG
+#define STARLIGHT_TESTS_GRAPHICS_HG
+
+#include <Utils/Macros.h>
+
+#include <stdio.h>
+#include <stdint.h>
 
 #include <SDL3/SDL.h>
+#include <stddef.h>
+#include <iso646.h>
 #include <stdbool.h>
+
 
 void 
     STESTS_PollEvents(bool* fp_IsRunning)
@@ -107,4 +115,4 @@ void
     }
 }
 
-#endif /*STARLIGHT_TESTS_INPUT_H_G*/
+#endif /*STARLIGHT_TESTS_GRAPHICS_HG*/

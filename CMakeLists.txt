@@ -80,6 +80,8 @@ add_library(starlight_physics ${STARLIGHT_BUILD_TYPE}
 
 target_include_directories(starlight_physics PUBLIC
     ${PROJECT_SOURCE_DIR}/third_party/ #header only library includes
+    ${PROJECT_SOURCE_DIR}/src
+
 )
 
 set_target_properties(starlight_physics PROPERTIES POSITION_INDEPENDENT_CODE ON) #make starlight_physics PIC friendly UwU
@@ -225,10 +227,6 @@ if(BUILD_STARLIGHT_TESTS)
     add_executable(     
         starlight_tests
         ${STARLIGHT_PHYSICS_TESTS_SOURCES}
-    )
-
-    target_include_directories(starlight_tests PRIVATE
-        ${PROJECT_SOURCE_DIR}/src
     )
 
     ####################################### helper macro for reducing repeated boiler plate for static linking uwu
