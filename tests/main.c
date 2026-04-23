@@ -16,6 +16,7 @@ static void
     OnSegfault(int fp_Signature)
 {
     printf("[SEGMENTATION FAULT]: uh oh stinky uwu %d", fp_Signature);
+    exit(fp_Signature);
 }
 
 int main(int argc, char** argv)
