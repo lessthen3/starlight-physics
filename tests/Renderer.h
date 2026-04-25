@@ -11,14 +11,18 @@
 #ifndef STARLIGHT_TESTS_RENDERER_H_G
 #define STARLIGHT_TESTS_RENDERER_H_G
 
-#include "ShaderProgram.h"
-
-#include "Macros.h"
+///SDL3
 #include <SDL3/SDL.h>
+
+///STD
 #include <stdbool.h>
 #include <stdint.h>
 #include <iso646.h>
 #include <stdio.h>
+
+///Starlight Physics
+#include "ShaderProgram.h"
+#include "Utils/Macros.h"
 
 typedef struct 
 {

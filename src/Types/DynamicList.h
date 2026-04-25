@@ -11,14 +11,9 @@
 #ifndef STARLIGHT_PHYSICS_DYNAMIC_LIST_HG
 #define STARLIGHT_PHYSICS_DYNAMIC_LIST_HG
 
-///STD
-#include <stdint.h>
-#include <stddef.h>
-#include <malloc.h>
-#include <iso646.h>
-
 ///Starlight Physics uwu
 #include "Utils/Macros.h" //idk should move this to a better dir ngl owo
+#include "Utils/MemoryAllocator.h"
 
 typedef struct{
     void* Data;
@@ -107,6 +102,7 @@ STARLIGHT_FORCEINLINE void
     fp_List->Data = NULL;
     fp_List->CurrentSize = 0;
     fp_List->MaxCapacity = 0;
+    fp_List->ElementSize = 0; //idk reset ig owo
 }
 
 #endif /*STARLIGHT_PHYSICS_DYNAMIC_LIST_HG*/

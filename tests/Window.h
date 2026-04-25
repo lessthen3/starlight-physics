@@ -13,7 +13,6 @@
 
 #include <Utils/Macros.h>
 
-#include <stdio.h>
 #include <stdint.h>
 
 #include <SDL3/SDL.h>

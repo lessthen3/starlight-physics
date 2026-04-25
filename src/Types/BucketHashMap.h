@@ -8,11 +8,19 @@
  *
  *      Starlight Physics is a free open source physics engine
 ********************************************************************/
-#include "Utils/Macros.h"
+#ifndef STARLIGHT_PHYSICS_BUCKET_HASH_MAP_HG
+#define STARLIGHT_PHYSICS_BUCKET_HASH_MAP_HG
 
-void 
-    STARLIGHT_Hi(void)
-{
+#include <stddef.h>
 
-}
+typedef struct{
+    size_t hi;
+} STARLIGHT_BucketHashMap;
+
+
+
+
+
+
+#endif /*STARLIGHT_PHYSICS_BUCKET_HASH_MAP_HG*/
 

@@ -13,7 +13,7 @@
 
 #include <stdint.h>
 #include <stddef.h>
-#include <malloc.h>
+#include <stdlib.h>
 #include <iso646.h>
 
 #include "Utils/Macros.h"

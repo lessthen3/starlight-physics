@@ -16,13 +16,16 @@
 #include <cglm/cglm.h>
 #include <cglm/struct.h>
 
+#include "Types/StarlightString.h"
+#include "Types/DynamicList.h"
+
 typedef struct
 {
     GLuint ID;
-    char Name[64];
-} ShaderProgram;
+    STARLIGHT_String Name;
+} STARLIGHT_TESTS_ShaderProgram;
 
-ShaderProgram
+STARLIGHT_TESTS_ShaderProgram
     STESTS_ShaderProgramCreate
     (
         const char* fp_ShaderName,
@@ -30,9 +33,9 @@ ShaderProgram
         const char* fp_FragmentSourceFilePath
     )
 {
-    ShaderProgram f_ShaderProgram;
+    STARLIGHT_TESTS_ShaderProgram f_ShaderProgram;
 
-    f_ShaderProgram.Name = fp_ShaderName;
+    f_ShaderProgram.Name = STARLIGHT_StringCreate(size_t fp_InitialCapacity);
     f_ShaderProgram.ID = glCreateProgram();
 
     char* f_VertexSourceCode, f_FragmentSourceCode;
@@ -66,50 +69,50 @@ ShaderProgram
 // Fog Uniform Creator Setters
 //////////////////////////////////////////////
 
-void
-    SetUniform
-    (
-        const string& fp_UniformName,
-        const Fog3D& fp_Fog
-    )
-{
-    SetUniform(fp_UniformName + ".activeFog", fp_Fog.IsActive() ? 1 : 0);
-    SetUniform(fp_UniformName + ".colour", fp_Fog.GetColour());
-    SetUniform(fp_UniformName + ".density", fp_Fog.GetDensity());
-}
+// void
+//     SetUniform
+//     (
+//         const string& fp_UniformName,
+//         const Fog3D& fp_Fog
+//     )
+// {
+//     SetUniform(fp_UniformName + ".activeFog", fp_Fog.IsActive() ? 1 : 0);
+//     SetUniform(fp_UniformName + ".colour", fp_Fog.GetColour());
+//     SetUniform(fp_UniformName + ".density", fp_Fog.GetDensity());
+// }
 
 //////////////////////////////////////////////
 // Material Uniform Setters
 //////////////////////////////////////////////
 
-void
-    SetMaterialUniforms
-    (
-        const string& fp_UniformName,
-        const PeachMaterial& fp_Material
-    )
-{
-    SetUniform(fp_UniformName + ".ambient", fp_Material.GetAmbientColour());
-    SetUniform(fp_UniformName + ".diffuse", fp_Material.GetDiffuseColour());
-    SetUniform(fp_UniformName + ".specular", fp_Material.GetSpecularColour());
-    SetUniform(fp_UniformName + ".hasTexture", fp_Material.IsTextured() ? 1 : 0);
-    SetUniform(fp_UniformName + ".reflectance", fp_Material.GetReflectance());
-}
+// void
+//     SetMaterialUniforms
+//     (
+//         const string& fp_UniformName,
+//         const PeachMaterial& fp_Material
+//     )
+// {
+//     SetUniform(fp_UniformName + ".ambient", fp_Material.GetAmbientColour());
+//     SetUniform(fp_UniformName + ".diffuse", fp_Material.GetDiffuseColour());
+//     SetUniform(fp_UniformName + ".specular", fp_Material.GetSpecularColour());
+//     SetUniform(fp_UniformName + ".hasTexture", fp_Material.IsTextured() ? 1 : 0);
+//     SetUniform(fp_UniformName + ".reflectance", fp_Material.GetReflectance());
+// }
 
 //////////////////////////////////////////////
 // Texture Uniform Setter
 //////////////////////////////////////////////
 
-void
-    SetTexture
-    (
-        const string& fp_UniformName,
-        int fp_TextureID,
-        int fp_TextureUnit
-    )
-{
+// void
+//     SetTexture
+//     (
+//         const string& fp_UniformName,
+//         int fp_TextureID,
+//         int fp_TextureUnit
+//     )
+// {
 
-}
+// }
 
 //////////////////////////////////////////////
 // Shader Linker 

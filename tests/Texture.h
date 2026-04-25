@@ -8,11 +8,18 @@
  *
  *      Starlight Physics is a free open source physics engine
 ********************************************************************/
-#include "Utils/Macros.h"
+#ifndef STARLIGHT_TESTS_TEXTURE_HG
+#define STARLIGHT_TESTS_TEXTURE_HG
 
-void 
-    STARLIGHT_Hi(void)
+#include <stdint.h>
+
+// embed at the TOP of any ref-counted struct so the pointer cast is safe
+typedef struct
 {
+    // RefHeader Ref;       // MUST be first member
+    int       Width;
+    int       Height;
+    uint8_t*  Pixels;
+} Texture;
 
-}
-
+#endif /*STARLIGHT_TESTS_TEXTURE_HG*/

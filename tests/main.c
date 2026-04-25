@@ -8,20 +8,27 @@
  *
  *      Starlight Physics is a free open source physics engine
 ********************************************************************/
+#include "Utils/Macros.h"
 #include "Window.h"
+
+#include "Types/RingBuffer.h"
 
 #include <signal.h>
 
 static void
     OnSegfault(int fp_Signature)
 {
-    printf("[SEGMENTATION FAULT]: uh oh stinky uwu %d", fp_Signature);
+    printf("[SEGMENTATION FAULT]: uh oh stinky uwu %d\n", fp_Signature);
     exit(fp_Signature);
 }
 
-int main(int argc, char** argv)
+int main(void)
 {
     signal(SIGSEGV, OnSegfault);
+
+    STARLIGHT_PRINT("Hello World >w<", STARLIGHT_COL_BRIGHT_MAGENTA);
+
+    STARLIGHT_RingBuffer f_TestRingBuffer = STARLIGHT_RING_BUFFER_CREATE(100, 1);
 
     SDL_Window* f_MainWindow = SDL_CreateWindow
     (
