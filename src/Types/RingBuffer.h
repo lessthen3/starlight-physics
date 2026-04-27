@@ -21,6 +21,8 @@
 
 #define STARLIGHT_RING_BUFFER_CREATE(fp_Capacity, fp_ElementSize)                                       \
 (                                                                                                       \
+    STARLIGHT_STATIC_ASSERT_UNSIGNED(fp_Capacity, "[Ring Buffer]: only unsigned values are valid for capacity"),                \
+    STARLIGHT_STATIC_ASSERT_UNSIGNED(fp_ElementSize, "[Ring Buffer]: only unsigned values are valid for element size"),                        \
     STARLIGHT_ASSERT(fp_ElementSize > 0 && "Tried to create a ring buffer with a 0 element size ;w;"),  \
     STARLIGHT_ASSERT(fp_Capacity > 0     && "capacity must be > 0"),                                    \
     STARLIGHT_ASSERT((fp_Capacity & (fp_Capacity - 1)) == 0 && "capacity must be power of 2"),          \
@@ -29,35 +31,33 @@
 
 #define STARLIGHT_RING_BUFFER_WRITE(fp_RingBuffer, T)                                                   \
 (                                                                                                       \
-    STARLIGHT_ASSERT((fp_RingBuffer) && "Tried to pass NULL ring buffer >O<"),                            \
-    STARLIGHT_ASSERT((fp_RingBuffer)->Data && "Tried to pass NULL data inside ring buffer ;w;"),          \
+    STARLIGHT_ASSERT((fp_RingBuffer) && "Tried to pass NULL ring buffer >O<"),                          \
+    STARLIGHT_ASSERT((fp_RingBuffer)->Data && "Tried to pass NULL data inside ring buffer ;w;"),        \
     ((T*)STARLIGHT_IMPLEMENTATION_RingBufferWrite(fp_RingBuffer))                                       \
 )
 
 #define STARLIGHT_RING_BUFFER_PEEK(fp_RingBuffer, T, fp_Offset)                                         \
 (                                                                                                       \
-    STARLIGHT_ASSERT((fp_RingBuffer) && "Tried to pass NULL ring buffer"),                                \
-    STARLIGHT_ASSERT(fp_Offset < (fp_RingBuffer)->Capacity && "Index out of bounds!"),                    \
+    STARLIGHT_STATIC_ASSERT_UNSIGNED(fp_Offset, "[Ring Buffer]: only unsigned values are valid for ring buffer offsets"),                              \
+    STARLIGHT_ASSERT(fp_Offset < fp_RingBuffer.Capacity && "Index out of bounds!"),                     \
     ((T*)STARLIGHT_IMPLEMENTATION_RingBufferPeek(fp_RingBuffer, fp_Offset))                             \
 )
 
     //STARLIGHT_ASSERT(fp_Buffer->Head > 0 && "Can't peek an empty")  WARNING: unsure how to manage invalid elements whatever
 #define STARLIGHT_RING_BUFFER_PEEK_LATEST(fp_RingBuffer, T)                                             \
 (                                                                                                       \
-    STARLIGHT_ASSERT(fp_RingBuffer && "Tried to pass NULL ring buffer"),                                \
     ((T*)STARLIGHT_IMPLEMENTATION_RingBufferPeekLatest(fp_RingBuffer))                                  \
 )
 
 #define STARLIGHT_RING_BUFFER_GET_VALID_ELEMENT_COUNT(fp_RingBuffer)                                    \
 (                                                                                                       \
-    STARLIGHT_ASSERT((fp_RingBuffer) && "Tried to pass NULL ring buffer"),                                \
     STARLIGHT_IMPLEMENTATION_RingBufferGetValidElementCount(fp_RingBuffer)                              \
 )
 
 #define STARLIGHT_RING_BUFFER_DESTROY(fp_RingBuffer)                                                    \
 (                                                                                                       \
-    STARLIGHT_ASSERT(fp_RingBuffer && "Tried to pass NULL ring buffer"),                                \
-    STARLIGHT_ASSERT(fp_RingBuffer->Data && "Tried to pass NULL data inside ring buffer ;w;"),          \
+    STARLIGHT_ASSERT((fp_RingBuffer) && "Tried to pass NULL ring buffer"),                              \
+    STARLIGHT_ASSERT((fp_RingBuffer)->Data && "Tried to pass NULL data inside ring buffer ;w;"),        \
     STARLIGHT_IMPLEMENTATION_RingBufferDestroy(fp_RingBuffer)                                           \
 )
 
@@ -81,6 +81,7 @@ STARLIGHT_NODISCARD_FORCEINLINE STARLIGHT_RingBuffer
     f_RingBuffer.ElementSize = fp_ElementSize;
 
     f_RingBuffer.Data = malloc(fp_Capacity*fp_ElementSize); 
+    STARLIGHT_ASSERT(f_RingBuffer.Data && "[Ring Buffer]: Failed to allocate memory on creation, something really bad must've happened ;w;");
 
     f_RingBuffer.Head = 0;
 
@@ -101,34 +102,34 @@ STARLIGHT_NODISCARD_FORCEINLINE void*
 STARLIGHT_NODISCARD_FORCEINLINE void*
     STARLIGHT_IMPLEMENTATION_RingBufferPeek
     (
-        const STARLIGHT_RingBuffer* fp_Buffer,
-        const size_t                fp_OffsetFromOldest
+        const STARLIGHT_RingBuffer fp_Buffer,
+        const size_t               fp_OffsetFromOldest
     )
 {
     // oldest element lives at Head - Capacity when buffer is full, offset 0 = oldest, offset Capacity-1 = newest
-    size_t f_Index = (fp_Buffer->Head - fp_Buffer->Capacity + fp_OffsetFromOldest) & (fp_Buffer->Capacity - 1);
-    return (uint8_t*)fp_Buffer->Data + f_Index*fp_Buffer->ElementSize;
+    size_t f_Index = (fp_Buffer.Head - fp_Buffer.Capacity + fp_OffsetFromOldest) & (fp_Buffer.Capacity - 1);
+    return (uint8_t*)fp_Buffer.Data + f_Index*fp_Buffer.ElementSize;
 }
 
 STARLIGHT_NODISCARD_FORCEINLINE void*
     STARLIGHT_IMPLEMENTATION_RingBufferPeekLatest
     (
-        const STARLIGHT_RingBuffer* fp_Buffer
+        const STARLIGHT_RingBuffer fp_Buffer
     )
 {
-    size_t f_Index = (fp_Buffer->Head - 1) & (fp_Buffer->Capacity - 1);
-    return (uint8_t*)fp_Buffer->Data + f_Index*fp_Buffer->ElementSize;
+    size_t f_Index = (fp_Buffer.Head - 1) & (fp_Buffer.Capacity - 1);
+    return (uint8_t*)fp_Buffer.Data + f_Index*fp_Buffer.ElementSize;
 }
 
 STARLIGHT_NODISCARD_FORCEINLINE size_t //kinda just intended if ur unsure or as a safety check for reading data on first write cycle owo 
     STARLIGHT_IMPLEMENTATION_RingBufferGetValidElementCount
     (
-        const STARLIGHT_RingBuffer* fp_Buffer
+        const STARLIGHT_RingBuffer fp_Buffer
     )
 {
-    return fp_Buffer->Head < fp_Buffer->Capacity
-        ? fp_Buffer->Head
-        : fp_Buffer->Capacity;
+    return fp_Buffer.Head < fp_Buffer.Capacity
+        ? fp_Buffer.Head
+        : fp_Buffer.Capacity;
 }
 
 STARLIGHT_FORCEINLINE void

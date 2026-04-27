@@ -27,9 +27,9 @@
 // since we inline, CSE should optimize the double calculation and leave it in the register at the call site
 #define STARLIGHT_STATIC_ARENA_ALLOCATE(fp_Arena, T, fp_Size, fp_Alignment)                                                                     \
 (                                                                                                                                               \
-    STARLIGHT_ASSERT((fp_Arena) && "[Static Arena]: Tried passing NULL static arena to STARLIGHT_STATIC_ARENA_ALLOCATE"),                         \
+    STARLIGHT_ASSERT((fp_Arena) && "[Static Arena]: Tried passing NULL static arena to STARLIGHT_STATIC_ARENA_ALLOCATE"),                       \
     STARLIGHT_ASSERT((((fp_Arena)->Offset + fp_Alignment - 1) & ~(fp_Alignment - 1)) + fp_Size <= (fp_Arena)->Capacity && "[Static Arena]: Buffer Overflow! wai :d"), \
-    (T*)STARLIGHT_IMPLEMENTATION_StaticArenaAllocate(fp_Arena, fp_Size, (((fp_Arena)->Offset + fp_Alignment - 1) & ~(fp_Alignment - 1)))          \
+    (T*)STARLIGHT_IMPLEMENTATION_StaticArenaAllocate(fp_Arena, fp_Size, (((fp_Arena)->Offset + fp_Alignment - 1) & ~(fp_Alignment - 1)))        \
 )
 
 #define STARLIGHT_STATIC_ARENA_RESET(fp_Arena)                                                                                                  \
@@ -58,7 +58,7 @@ STARLIGHT_NODISCARD_FORCEINLINE STARLIGHT_StaticArena
 
     f_Arena.Base = malloc(fp_DesiredCapacity);
 
-    STARLIGHT_ASSERT(f_Arena.Base && "Failed to allocate memory for Static Arena, something really bad happened");
+    STARLIGHT_ASSERT(f_Arena.Base && "[Static Arena]: Failed to allocate memory, something really bad must've happened ;w;");
 
     f_Arena.Offset = 0;
     f_Arena.Capacity = fp_DesiredCapacity;

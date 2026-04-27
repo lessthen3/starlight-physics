@@ -120,4 +120,20 @@
 # define STARLIGHT_DEBUG_ASSERT(fp_Condition) ((void)0)
 #endif /*STARLIGHT_DEBUG_ASSERT*/
 
+// evaluates to void, fires at compile time if condition is false
+// works inside comma expressions because sizeof(...) IS an expression
+#define STARLIGHT_STATIC_ASSERT(fp_Condition, fp_Message) (void)sizeof(struct { _Static_assert(fp_Condition, fp_Message); int x; })
+
+#define STARLIGHT_STATIC_ASSERT_UNSIGNED(fp_Val, fp_Message)    \
+    STARLIGHT_STATIC_ASSERT(                             \
+        _Generic((fp_Val),                               \
+            uint8_t:  1,                                 \
+            uint16_t: 1,                                 \
+            uint32_t: 1,                                 \
+            uint64_t: 1,                                 \
+            default:  0                                  \
+        ),                                               \
+        fp_Message                                       \
+    )
+
 #endif /*__STARLIGHT_PHYSICS_MACROS_HG__*/

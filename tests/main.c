@@ -14,6 +14,7 @@
 #include "Types/RingBuffer.h"
 #include "Types/StaticArena.h"
 #include "Types/DynamicList.h"
+#include "Types/Array.h"
 
 #include <signal.h>
 
@@ -27,6 +28,21 @@ static void
         stderr,
         STARLIGHT_COL_BRIGHT_RED
         "\n[SEGMENTATION FAULT]: uh oh stinky uwu, signal: %d\n"
+        STARLIGHT_COL_RESET,
+        fp_Signal
+    );
+
+    exit(fp_Signal);
+}
+
+static void
+    OnTerminalInterrupt(int fp_Signal)
+{
+    fprintf
+    (
+        stderr,
+        STARLIGHT_COL_MAGENTA
+        "\n[PROCESS TERMINATED]: OwO, signal: %d\n"
         STARLIGHT_COL_RESET,
         fp_Signal
     );
@@ -65,7 +81,7 @@ static void
 
     ////////////////////// Create //////////////////////
 
-    STARLIGHT_RingBuffer f_Buffer = STARLIGHT_RING_BUFFER_CREATE(8, sizeof(int));
+    STARLIGHT_RingBuffer f_Buffer = STARLIGHT_RING_BUFFER_CREATE(8u, sizeof(int));
 
     STARLIGHT_TEST("create: Data is non-null",         f_Buffer.Data != NULL);
     STARLIGHT_TEST("create: Capacity is 8",            f_Buffer.Capacity == 8);
@@ -82,11 +98,11 @@ static void
     }
 
     STARLIGHT_TEST("write 3: Head == 3",               f_Buffer.Head == 3);
-    STARLIGHT_TEST("write 3: ValidCount == 3",         STARLIGHT_RING_BUFFER_GET_VALID_ELEMENT_COUNT(&f_Buffer) == 3);
+    STARLIGHT_TEST("write 3: ValidCount == 3",         STARLIGHT_RING_BUFFER_GET_VALID_ELEMENT_COUNT(f_Buffer) == 3);
 
     ////////////////////// PeekLatest //////////////////////
 
-    int* f_Latest = STARLIGHT_RING_BUFFER_PEEK_LATEST(&f_Buffer, int);
+    int* f_Latest = STARLIGHT_RING_BUFFER_PEEK_LATEST(f_Buffer, int);
     STARLIGHT_TEST("peek latest: value is 20",         *f_Latest == 20);
 
     ////////////////////// Fill to capacity + wraparound //////////////////////
@@ -98,11 +114,11 @@ static void
         *fv_Slot = 100 + lv_I;   // 100..107
     }
 
-    STARLIGHT_TEST("wrap: ValidCount == 8 (full)",     STARLIGHT_RING_BUFFER_GET_VALID_ELEMENT_COUNT(&f_Buffer) == 8);
+    STARLIGHT_TEST("wrap: ValidCount == 8 (full)",     STARLIGHT_RING_BUFFER_GET_VALID_ELEMENT_COUNT(f_Buffer) == 8);
     STARLIGHT_TEST("wrap: Head == 11",                 f_Buffer.Head == 11);
 
     // newest is the last written: 107
-    f_Latest = STARLIGHT_RING_BUFFER_PEEK_LATEST(&f_Buffer, int);
+    f_Latest = STARLIGHT_RING_BUFFER_PEEK_LATEST(f_Buffer, int);
     STARLIGHT_TEST("wrap: latest == 107",              *f_Latest == 107);
 
     ////////////////////// Peek oldest-to-newest order //////////////////////
@@ -112,7 +128,7 @@ static void
     bool f_OrderCorrect = true;
     for (size_t lv_I = 0; lv_I < 8; lv_I++)
     {
-        int* fv_Entry = STARLIGHT_RING_BUFFER_PEEK(&f_Buffer, int, lv_I);
+        int* fv_Entry = STARLIGHT_RING_BUFFER_PEEK(f_Buffer, int, lv_I);
         if (*fv_Entry != (int)(100 + lv_I))
         {
             f_OrderCorrect = false;
@@ -129,7 +145,6 @@ static void
     STARLIGHT_TEST("destroy: Head is 0",               f_Buffer.Head == 0);
 }
 
-
 //================================================================================ DynamicList Tests ================================================================================//
 
 static void
@@ -139,7 +154,7 @@ static void
 
     ////////////////////// Create //////////////////////
 
-    STARLIGHT_DynamicList f_List = STARLIGHT_DYNAMIC_LIST_CREATE(4, sizeof(float));
+    STARLIGHT_DynamicList f_List = STARLIGHT_DYNAMIC_LIST_CREATE(4u, sizeof(float));
 
     STARLIGHT_TEST("create: Data is non-null",         f_List.Data != NULL);
     STARLIGHT_TEST("create: MaxCapacity == 4",         f_List.MaxCapacity == 4);
@@ -167,9 +182,9 @@ static void
 
     ////////////////////// Get //////////////////////
 
-    float* f_First  = STARLIGHT_DYNAMIC_LIST_GET_INDEX(f_List, float, 0);
-    float* f_Third  = STARLIGHT_DYNAMIC_LIST_GET_INDEX(f_List, float, 2);
-    float* f_Fifth  = STARLIGHT_DYNAMIC_LIST_GET_INDEX(f_List, float, 4);
+    float* f_First  = STARLIGHT_DYNAMIC_LIST_GET_INDEX(f_List, float, 0u);
+    float* f_Third  = STARLIGHT_DYNAMIC_LIST_GET_INDEX(f_List, float, 2u);
+    float* f_Fifth  = STARLIGHT_DYNAMIC_LIST_GET_INDEX(f_List, float, 4u);
 
     STARLIGHT_TEST("get [0] == 1.0",                   *f_First == 1.0f);
     STARLIGHT_TEST("get [2] == 3.0",                   *f_Third == 3.0f);
@@ -275,6 +290,7 @@ static void
 int main(void)
 {
     signal(SIGSEGV, OnSegfault);
+    signal(SIGINT, OnTerminalInterrupt);
 
 
     STARLIGHT_PRINT("Starlight Physics — Data Structure Tests >w<", STARLIGHT_COL_BRIGHT_MAGENTA);
@@ -283,6 +299,20 @@ int main(void)
     TestDynamicList();
     TestStaticArena();
     PrintSummary();
+
+    STARLIGHT_Array f_Array = STARLIGHT_ARRAY_CREATE(2u, 2u);
+
+    // char f_StackOverflow[60000000u];
+
+    // f_StackOverflow[0] = 'f';
+
+    // unsigned char* f_HeapViolation = 0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000;
+
+    // *f_HeapViolation = 0xFF;
+
+    while(1) free(NULL);
+
+    // f_StackOverflow[20000] = 'c';
 
     return gs_TestsFailed == 0 ? EXIT_SUCCESS : EXIT_FAILURE;
 

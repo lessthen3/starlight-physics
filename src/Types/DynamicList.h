@@ -17,6 +17,8 @@
 
 #define STARLIGHT_DYNAMIC_LIST_CREATE(fp_InitialCapacity, fp_ElementSize)                                                                       \
 (                                                                                                                                               \
+    STARLIGHT_STATIC_ASSERT_UNSIGNED(fp_InitialCapacity, "[Dynamic List]: only unsigned values are valid for initial capacity"),                \
+    STARLIGHT_STATIC_ASSERT_UNSIGNED(fp_ElementSize, "[Dynamic List]: only unsigned values are valid for element size"),                        \
     STARLIGHT_ASSERT(fp_InitialCapacity > 0 && "[Dynamic List]: Initial capacity must be greater than 0!"),                                     \
     STARLIGHT_ASSERT(fp_ElementSize > 0 && "[Dynamic List]: Element size must be greater than 0!"),                                             \
     STARLIGHT_IMPLEMENTATION_DynamicListCreate(fp_InitialCapacity, fp_ElementSize)                                                              \
@@ -24,27 +26,28 @@
 
 #define STARLIGHT_DYNAMIC_LIST_PUSH_BACK(fp_List, T)                                                                                            \
 (                                                                                                                                               \
-    STARLIGHT_ASSERT((fp_List) && "[Dynamic List]: Tried passing NULL reference to STARLIGHT_DYNAMIC_LIST_PUSH_BACK"),                            \
+    STARLIGHT_ASSERT((fp_List) && "[Dynamic List]: Tried passing NULL reference to STARLIGHT_DYNAMIC_LIST_PUSH_BACK"),                          \
     (T*)STARLIGHT_IMPLEMENTATION_DynamicListPushBack(fp_List)                                                                                   \
 )
 
 #define STARLIGHT_DYNAMIC_LIST_GET_INDEX(fp_List, T, fp_Index)                                                                                  \
 (                                                                                                                                               \
+    STARLIGHT_STATIC_ASSERT_UNSIGNED(fp_Index, "[Dynamic List]: only unsigned values are valid for list indices"),                              \
     STARLIGHT_ASSERT(fp_Index < fp_List.CurrentSize && "[Dynamic List]:Index out of bounds! invalid call to STARLIGHT_DYNAMIC_LIST_GET_INDEX"), \
     (T*)STARLIGHT_IMPLEMENTATION_DynamicListGet(fp_List, fp_Index)                                                                              \
 )
 
 #define STARLIGHT_DYNAMIC_LIST_POP_BACK(fp_List)                                                                                                \
 (                                                                                                                                               \
-    STARLIGHT_ASSERT((fp_List) && "[Dynamic List]: Tried passing NULL reference to STARLIGHT_DYNAMIC_LIST_GET_INDEX"),                            \
-    STARLIGHT_ASSERT((fp_List)->CurrentSize > 0 && "[Dynamic List]: Size UNDERFLOW! invalid call to STARLIGHT_DYNAMIC_LIST_POP_BACK"),            \
+    STARLIGHT_ASSERT((fp_List) && "[Dynamic List]: Tried passing NULL reference to STARLIGHT_DYNAMIC_LIST_GET_INDEX"),                          \
+    STARLIGHT_ASSERT((fp_List)->CurrentSize > 0 && "[Dynamic List]: Size UNDERFLOW! invalid call to STARLIGHT_DYNAMIC_LIST_POP_BACK"),          \
     STARLIGHT_IMPLEMENTATION_DynamicListPopBack(fp_List)                                                                                        \
 )
 
 #define STARLIGHT_DYNAMIC_LIST_DESTROY(fp_List)                                                                                                 \
 (                                                                                                                                               \
-    STARLIGHT_ASSERT((fp_List) && "[Dynamic List]: Tried to pass NULL list in STARLIGHT_DYNAMIC_LIST_DESTROY"),                                   \
-    STARLIGHT_ASSERT((fp_List)->Data && "[Dynamic List]: Tried to pass NULL data inside list(wai) ;w;, [STARLIGHT_DYNAMIC_LIST_DESTROY]"),        \
+    STARLIGHT_ASSERT((fp_List) && "[Dynamic List]: Tried to pass NULL list in STARLIGHT_DYNAMIC_LIST_DESTROY"),                                 \
+    STARLIGHT_ASSERT((fp_List)->Data && "[Dynamic List]: Tried to pass NULL data inside list(wai) ;w;, [STARLIGHT_DYNAMIC_LIST_DESTROY]"),      \
     STARLIGHT_IMPLEMENTATION_DynamicListDestroy(fp_List)                                                                                        \
 )
 
@@ -67,7 +70,11 @@ STARLIGHT_NODISCARD_FORCEINLINE STARLIGHT_DynamicList
 
     f_List.MaxCapacity = fp_InitialCapacity;
     f_List.ElementSize = fp_ElementSize;
+
     f_List.Data = malloc(fp_ElementSize * fp_InitialCapacity);
+    
+    STARLIGHT_ASSERT(f_List.Data && "[Dynamic List]: Failed to allocate memory, something really bad must've happened ;w;");
+
     f_List.CurrentSize = 0; //ye no constructors ;w;
     
     return f_List;
@@ -79,9 +86,9 @@ STARLIGHT_NODISCARD_FORCEINLINE void*
     if(fp_List->CurrentSize == fp_List->MaxCapacity)
     {
         size_t f_NewCapacity = fp_List->MaxCapacity * 2; //scale geometrically using 2^N for now apparently theres a better way but w/e
-        void* f_NewDataChunk = realloc(fp_List->Data, f_NewCapacity * fp_List->ElementSize);
+        void* f_NewDataChunk = realloc(fp_List->Data, f_NewCapacity*fp_List->ElementSize);
 
-        STARLIGHT_ASSERT(f_NewDataChunk && "Unable to reallocate memory for dynamic list, something really bad must've happened OwO");
+        STARLIGHT_ASSERT(f_NewDataChunk && "[Dynamic List]: Unable to reallocate memory on push back, something really bad must've happened OwO");
 
         fp_List->Data = f_NewDataChunk;
         fp_List->MaxCapacity = f_NewCapacity;
