@@ -8,16 +8,11 @@
  *
  *      Starlight Physics is a free open source physics engine
 ********************************************************************/
-#ifndef STARLIGHT_PHYSICS_LINKED_LIST_HG
-#define STARLIGHT_PHYSICS_LINKED_LIST_HG
+#include "BvhTree.h"
 
-#include <stdint.h>
+int
+    SP_placeholderTU(void)
+{
+    return 5+5;
+}
 
-typedef struct{
-    void* Begin;
-    uint8_t* End;
-    uint8_t* Current;
-} STARLIGHT_LinkedList;
-
-
-#endif /*STARLIGHT_PHYSICS_LINKED_LIST_HG*/ 

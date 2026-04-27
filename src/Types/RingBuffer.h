@@ -19,46 +19,47 @@
 ///Starlight Physics
 #include "Utils/Macros.h"
 
-#define STARLIGHT_RING_BUFFER_CREATE(fp_Capacity, fp_ElementSize)                                           \
-    STARLIGHT_SAFE_CALL(                                                                                    \
-        STARLIGHT_IMPLEMENTATION_RingBufferCreate(fp_Capacity, fp_ElementSize),                             \
-        STARLIGHT_ASSERT(fp_ElementSize > 0 && "Tried to create a ring buffer with a 0 element size ;w;"),  \
-        STARLIGHT_ASSERT(fp_Capacity > 0     && "capacity must be > 0"),                                    \
-        STARLIGHT_ASSERT((fp_Capacity & (fp_Capacity - 1)) == 0 && "capacity must be power of 2")           \
-    )
+#define STARLIGHT_RING_BUFFER_CREATE(fp_Capacity, fp_ElementSize)                                       \
+(                                                                                                       \
+    STARLIGHT_ASSERT(fp_ElementSize > 0 && "Tried to create a ring buffer with a 0 element size ;w;"),  \
+    STARLIGHT_ASSERT(fp_Capacity > 0     && "capacity must be > 0"),                                    \
+    STARLIGHT_ASSERT((fp_Capacity & (fp_Capacity - 1)) == 0 && "capacity must be power of 2"),          \
+    STARLIGHT_IMPLEMENTATION_RingBufferCreate(fp_Capacity, fp_ElementSize)                              \
+)
 
-#define STARLIGHT_RING_BUFFER_WRITE(fp_RingBuffer, T)                                        \
-    STARLIGHT_SAFE_CALL(                                                                     \
-        ((T*)STARLIGHT_IMPLEMENTATION_RingBufferWrite(fp_RingBuffer)),                       \
-        STARLIGHT_ASSERT(fp_RingBuffer),                                                     \
-        STARLIGHT_ASSERT(fp_RingBuffer->Data)                                                \
-    )
+#define STARLIGHT_RING_BUFFER_WRITE(fp_RingBuffer, T)                                                   \
+(                                                                                                       \
+    STARLIGHT_ASSERT((fp_RingBuffer) && "Tried to pass NULL ring buffer >O<"),                            \
+    STARLIGHT_ASSERT((fp_RingBuffer)->Data && "Tried to pass NULL data inside ring buffer ;w;"),          \
+    ((T*)STARLIGHT_IMPLEMENTATION_RingBufferWrite(fp_RingBuffer))                                       \
+)
 
-#define STARLIGHT_RING_BUFFER_PEEK(fp_RingBuffer, T, fp_Offset)                               \
-    STARLIGHT_SAFE_CALL(                                                                      \
-        ((T*)STARLIGHT_IMPLEMENTATION_RingBufferPeek(fp_RingBuffer, fp_Offset)),              \
-        STARLIGHT_ASSERT(fp_RingBuffer && "Tried to pass NULL ring buffer"),                  \
-        STARLIGHT_ASSERT(fp_Offset < fp_RingBuffer->Capacity && "Index out of bounds!")       \
-    )
+#define STARLIGHT_RING_BUFFER_PEEK(fp_RingBuffer, T, fp_Offset)                                         \
+(                                                                                                       \
+    STARLIGHT_ASSERT((fp_RingBuffer) && "Tried to pass NULL ring buffer"),                                \
+    STARLIGHT_ASSERT(fp_Offset < (fp_RingBuffer)->Capacity && "Index out of bounds!"),                    \
+    ((T*)STARLIGHT_IMPLEMENTATION_RingBufferPeek(fp_RingBuffer, fp_Offset))                             \
+)
 
     //STARLIGHT_ASSERT(fp_Buffer->Head > 0 && "Can't peek an empty")  WARNING: unsure how to manage invalid elements whatever
-#define STARLIGHT_RING_BUFFER_PEEK_LATEST(fp_RingBuffer, T)                         \
-    STARLIGHT_SAFE_CALL(                                                            \
-        ((T*)STARLIGHT_IMPLEMENTATION_RingBufferPeekLatest(fp_RingBuffer)),         \
-        STARLIGHT_ASSERT(fp_RingBuffer && "Tried to pass NULL ring buffer")         \
-    )
+#define STARLIGHT_RING_BUFFER_PEEK_LATEST(fp_RingBuffer, T)                                             \
+(                                                                                                       \
+    STARLIGHT_ASSERT(fp_RingBuffer && "Tried to pass NULL ring buffer"),                                \
+    ((T*)STARLIGHT_IMPLEMENTATION_RingBufferPeekLatest(fp_RingBuffer))                                  \
+)
 
-#define STARLIGHT_RING_BUFFER_GET_VALID_ELEMENT_COUNT(fp_RingBuffer)                \
-    STARLIGHT_SAFE_CALL(                                                            \
-        STARLIGHT_IMPLEMENTATION_RingBufferGetValidElementCount(fp_RingBuffer),     \
-        STARLIGHT_ASSERT(fp_RingBuffer && "Tried to pass NULL ring buffer")         \
-    )
+#define STARLIGHT_RING_BUFFER_GET_VALID_ELEMENT_COUNT(fp_RingBuffer)                                    \
+(                                                                                                       \
+    STARLIGHT_ASSERT((fp_RingBuffer) && "Tried to pass NULL ring buffer"),                                \
+    STARLIGHT_IMPLEMENTATION_RingBufferGetValidElementCount(fp_RingBuffer)                              \
+)
 
-#define STARLIGHT_RING_BUFFER_DESTROY(fp_RingBuffer)                                \
-    STARLIGHT_SAFE_CALL(                                                            \
-        STARLIGHT_IMPLEMENTATION_RingBufferDestroy(fp_RingBuffer),                  \
-        STARLIGHT_ASSERT(fp_RingBuffer && "Tried to pass NULL ring buffer")         \
-    )
+#define STARLIGHT_RING_BUFFER_DESTROY(fp_RingBuffer)                                                    \
+(                                                                                                       \
+    STARLIGHT_ASSERT(fp_RingBuffer && "Tried to pass NULL ring buffer"),                                \
+    STARLIGHT_ASSERT(fp_RingBuffer->Data && "Tried to pass NULL data inside ring buffer ;w;"),          \
+    STARLIGHT_IMPLEMENTATION_RingBufferDestroy(fp_RingBuffer)                                           \
+)
 
 typedef struct{
     void* Data;
@@ -116,7 +117,7 @@ STARLIGHT_NODISCARD_FORCEINLINE void*
     )
 {
     size_t f_Index = (fp_Buffer->Head - 1) & (fp_Buffer->Capacity - 1);
-    return (uint8_t*)fp_Buffer->Data + f_Index * fp_Buffer->ElementSize;
+    return (uint8_t*)fp_Buffer->Data + f_Index*fp_Buffer->ElementSize;
 }
 
 STARLIGHT_NODISCARD_FORCEINLINE size_t //kinda just intended if ur unsure or as a safety check for reading data on first write cycle owo 

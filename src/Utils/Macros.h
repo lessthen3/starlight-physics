@@ -86,17 +86,13 @@
     #define STARLIGHT_PRINT_FMT(fp_Colour, fp_FormattedString, ...) ((void)0)
 #endif /*STARLIGHT_ENABLE_TERMINAL*/
 
-//================================================================================ Assert Wrapper ================================================================================//
-
-#define STARLIGHT_SAFE_CALL(fp_Result, ...) (__VA_ARGS__, fp_Result)
-
-//================================================================================ Likely/Unlikely owo ================================================================================//
+//================================================================================ Likely/Unlikely UwU ================================================================================//
 
 #if defined(__GNUC__) || defined(__clang__)
 #   define STARLIGHT_LIKELY(fp_Condition)   __builtin_expect(!!(fp_Condition), 1)
 #   define STARLIGHT_UNLIKELY(fp_Condition) __builtin_expect(!!(fp_Condition), 0)
 #else
-#   define STARLIGHT_LIKELY(fp_Condition)   (fp_Condition)
+#   define STARLIGHT_LIKELY(fp_Condition)   (fp_Condition) //just use PGO or whatever for MSVC owo
 #   define STARLIGHT_UNLIKELY(fp_Condition) (fp_Condition)
 #endif
 
