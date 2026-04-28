@@ -307,15 +307,6 @@ if(BUILD_STARLIGHT_TESTS)
         )
     endif()
 
-    ####################################### Compiler Options and Definitions
-
-    if(MSVC)
-        target_compile_options(starlight_tests PRIVATE
-            $<$<CONFIG:Debug>:/MTd>
-            $<$<OR:$<CONFIG:Release>,$<CONFIG:RelWithDebInfo>,$<CONFIG:MinSizeRel>>:/MT>
-        ) 
-    endif(MSVC)
-
     ####################################### Link to Peach Core
 
     target_link_libraries(starlight_tests PRIVATE 
@@ -339,10 +330,6 @@ if(BUILD_STARLIGHT_TESTS)
                 $<$<CONFIG:Debug>:/MTd>
                 $<$<OR:$<CONFIG:Release>,$<CONFIG:RelWithDebInfo>,$<CONFIG:MinSizeRel>>:/MT>
             ) 
-            
-            target_compile_options(starlight_tests PUBLIC 
-                /utf-8
-            )
         endif(MSVC)
 
     endif(PEACH_PLATFORM_IS_WINDOWS)
