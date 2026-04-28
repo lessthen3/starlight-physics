@@ -139,7 +139,7 @@ static void
 
     ////////////////////// Destroy //////////////////////
 
-    STARLIGHT_IMPLEMENTATION_RingBufferDestroy(&f_Buffer);
+    STARLIGHT_RING_BUFFER_DESTROY(&f_Buffer);
     STARLIGHT_TEST("destroy: Data is NULL",            f_Buffer.Data == NULL);
     STARLIGHT_TEST("destroy: Capacity is 0",           f_Buffer.Capacity == 0);
     STARLIGHT_TEST("destroy: Head is 0",               f_Buffer.Head == 0);
@@ -306,11 +306,21 @@ int main(void)
 
     // f_StackOverflow[0] = 'f';
 
-    // unsigned char* f_HeapViolation = 0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000;
+    // uint64_t* f_HeapViolation = 0x0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000;
 
-    // *f_HeapViolation = 0xFF;
+    // *f_HeapViolation = 0xDEADBEEF;
 
-    while(1) free(NULL);
+    // uint8_t* f_HeapOverflow = malloc(59595959595959);
+
+    // f_HeapOverflow[0] = 0xFF;
+
+    #ifdef PEACH_PLATFORM_LINUX
+      while(1) free(NULL);
+    #endif
+
+    #ifdef PEACH_PLATFORM_WINDOWS
+        STARLIGHT_PRINT("hi me win owo", STARLIGHT_COL_BRIGHT_CYAN);
+    #endif
 
     // f_StackOverflow[20000] = 'c';
 

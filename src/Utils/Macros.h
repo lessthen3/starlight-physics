@@ -69,21 +69,14 @@
 
 // print macros, gets thrown out for release builds owo
 #ifdef STARLIGHT_ENABLE_TERMINAL
-    #define STARLIGHT_PRINT(fp_String, fp_Colour) \
-        fprintf(stdout, "%s\n", STARLIGHT_COLOURED(fp_Colour, fp_String))
-
-    #define STARLIGHT_PRINT_ERROR(fp_String) \
-        fprintf(stderr, STARLIGHT_COL_BRED "%s" STARLIGHT_COL_RESET "\n", fp_String)
-
-    #define STARLIGHT_PRINT_FMT(fp_Colour, fp_FormattedString, ...) \
-        fprintf(stdout, fp_Colour fp_FormattedString STARLIGHT_COL_RESET "\n", __VA_ARGS__)
-
-    #define STARLIGHT_PRINT_ERROR_FMT(fp_Colour, fp_FormattedString, ...) \
-        fprintf(stderr, fp_Colour fp_FormattedString STARLIGHT_COL_RESET "\n", __VA_ARGS__)
+#   define STARLIGHT_PRINT(fp_String, fp_Colour) fprintf(stdout, "%s\n", STARLIGHT_COLOURED(fp_Colour, fp_String))
+#   define STARLIGHT_PRINT_ERROR(fp_String) fprintf(stderr, STARLIGHT_COL_BRED "%s" STARLIGHT_COL_RESET "\n", fp_String)
+#   define STARLIGHT_PRINT_FMT(fp_Colour, fp_FormattedString, ...) fprintf(stdout, fp_Colour fp_FormattedString STARLIGHT_COL_RESET "\n", __VA_ARGS__)
+#   define STARLIGHT_PRINT_ERROR_FMT(fp_Colour, fp_FormattedString, ...) fprintf(stderr, fp_Colour fp_FormattedString STARLIGHT_COL_RESET "\n", __VA_ARGS__)
 #else
-    #define STARLIGHT_PRINT(fp_String, fp_Colour)          ((void)0)
-    #define STARLIGHT_PRINT_ERROR(fp_String)              ((void)0)
-    #define STARLIGHT_PRINT_FMT(fp_Colour, fp_FormattedString, ...) ((void)0)
+#   define STARLIGHT_PRINT(fp_String, fp_Colour)                   ((void)0)
+#   define STARLIGHT_PRINT_ERROR(fp_String)                        ((void)0)
+#   define STARLIGHT_PRINT_FMT(fp_Colour, fp_FormattedString, ...) ((void)0)
 #endif /*STARLIGHT_ENABLE_TERMINAL*/
 
 //================================================================================ Likely/Unlikely UwU ================================================================================//
@@ -125,15 +118,15 @@
 #define STARLIGHT_STATIC_ASSERT(fp_Condition, fp_Message) (void)sizeof(struct { _Static_assert(fp_Condition, fp_Message); int x; })
 
 #define STARLIGHT_STATIC_ASSERT_UNSIGNED(fp_Val, fp_Message)    \
-    STARLIGHT_STATIC_ASSERT(                             \
-        _Generic((fp_Val),                               \
-            uint8_t:  1,                                 \
-            uint16_t: 1,                                 \
-            uint32_t: 1,                                 \
-            uint64_t: 1,                                 \
-            default:  0                                  \
-        ),                                               \
-        fp_Message                                       \
+    STARLIGHT_STATIC_ASSERT(                                    \
+        _Generic((fp_Val),                                      \
+            uint8_t:  1,                                        \
+            uint16_t: 1,                                        \
+            uint32_t: 1,                                        \
+            uint64_t: 1,                                        \
+            default:  0                                         \
+        ),                                                      \
+        fp_Message                                              \
     )
 
 #endif /*__STARLIGHT_PHYSICS_MACROS_HG__*/

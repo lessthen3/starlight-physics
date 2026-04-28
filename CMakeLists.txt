@@ -1,6 +1,6 @@
 ##########################################################################
-#                          Starlight Physics v0.0.1
-#         Created by Ranyodh Singh Mandur - 🍑 2026-2026
+#                    Starlight Physics v0.0.1
+#         Created by Ranyodh Singh Mandur - 👾 2026-2026
 #
 #              Licensed under the MIT License (MIT).
 #         For more details, see the LICENSE file or visit:
@@ -90,94 +90,7 @@ set_target_properties(starlight_physics PROPERTIES POSITION_INDEPENDENT_CODE ON)
 # daddy guarantees exactly ONE of these is always defined per build so no ambiguity 🍑
 # daddy guaranteed so ig it works OwO
 
-if(PEACH_WINDOWS)
-    target_compile_definitions(starlight_physics PUBLIC
-        PEACH_PLATFORM_WINDOWS
-        PEACH_PLATFORM_DESKTOP
-        PEACH_ARCH_X64
-    )
-
-elseif(PEACH_WINDOWS_ARM64)
-    target_compile_definitions(starlight_physics PUBLIC
-        PEACH_PLATFORM_WINDOWS
-        PEACH_PLATFORM_DESKTOP
-        PEACH_ARCH_ARM64
-    )
-
-elseif(PEACH_MACOS)
-    target_compile_definitions(starlight_physics PUBLIC
-        PEACH_PLATFORM_MACOS
-        PEACH_PLATFORM_APPLE
-        PEACH_PLATFORM_DESKTOP
-        PEACH_ARCH_ARM64 # universal binary covers both but arm64 is primary
-    )
-
-elseif(PEACH_IOS)
-    target_compile_definitions(starlight_physics PUBLIC
-        PEACH_PLATFORM_IOS
-        PEACH_PLATFORM_APPLE
-        PEACH_PLATFORM_MOBILE
-        PEACH_ARCH_ARM64
-    )
-
-elseif(PEACH_TVOS)
-    target_compile_definitions(starlight_physics PUBLIC
-        PEACH_PLATFORM_TVOS
-        PEACH_PLATFORM_APPLE
-        PEACH_ARCH_ARM64
-    )
-
-elseif(PEACH_LINUX)
-    target_compile_definitions(starlight_physics PUBLIC
-        PEACH_PLATFORM_LINUX
-        PEACH_PLATFORM_DESKTOP
-        PEACH_ARCH_X64
-    )
-
-elseif(PEACH_BSD)
-    target_compile_definitions(starlight_physics PUBLIC
-        PEACH_PLATFORM_BSD
-        PEACH_PLATFORM_FREEBSD
-        PEACH_PLATFORM_DESKTOP
-        PEACH_ARCH_X64
-    )
-
-elseif(PEACH_HAIKU)
-    target_compile_definitions(starlight_physics PUBLIC
-        PEACH_PLATFORM_HAIKU
-        PEACH_PLATFORM_DESKTOP
-        PEACH_ARCH_X64
-    )
-
-elseif(PEACH_ANDROID)
-    target_compile_definitions(starlight_physics PUBLIC
-        PEACH_PLATFORM_ANDROID
-        PEACH_PLATFORM_MOBILE
-        PEACH_ARCH_ARM64
-    )
-
-elseif(PEACH_WASM)
-    target_compile_definitions(starlight_physics PUBLIC
-        PEACH_PLATFORM_WASM
-        PEACH_PLATFORM_WEB
-        PEACH_ARCH_WASM32 #ik that wasm3 or w/e is 64 bit idfk owo uwu
-    )
-
-elseif(PEACH_VITA)
-    target_compile_definitions(starlight_physics PUBLIC
-        PEACH_PLATFORM_VITA
-        PEACH_PLATFORM_HANDHELD
-        PEACH_ARCH_ARMV7
-    )
-
-elseif(PEACH_SWITCH)
-    target_compile_definitions(starlight_physics PUBLIC
-        PEACH_PLATFORM_SWITCH
-        PEACH_PLATFORM_HANDHELD
-        PEACH_ARCH_ARM64
-    )
-
-endif()
+peach_apply_platform_definitions(starlight_physics PUBLIC)
 
 ####################################### Compiler Options and Other Definitions
 
@@ -228,6 +141,8 @@ if(BUILD_STARLIGHT_TESTS)
         starlight_tests
         ${STARLIGHT_PHYSICS_TESTS_SOURCES}
     )
+
+    set_target_properties(starlight_tests PROPERTIES POSITION_INDEPENDENT_CODE ON) #make starlight_tests PIC friendly UwU
 
     ####################################### helper macro for reducing repeated boiler plate for static linking uwu
 
