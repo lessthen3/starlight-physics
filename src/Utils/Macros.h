@@ -70,13 +70,14 @@
 // print macros, gets thrown out for release builds owo
 #ifdef STARLIGHT_ENABLE_TERMINAL
 #   define STARLIGHT_PRINT(fp_String, fp_Colour) fprintf(stdout, "%s\n", STARLIGHT_COLOURED(fp_Colour, fp_String))
-#   define STARLIGHT_PRINT_ERROR(fp_String) fprintf(stderr, STARLIGHT_COL_BRED "%s" STARLIGHT_COL_RESET "\n", fp_String)
+#   define STARLIGHT_PRINT_ERROR(fp_String) fprintf(stderr, STARLIGHT_COL_BRIGHT_RED "%s" STARLIGHT_COL_RESET "\n", fp_String)
 #   define STARLIGHT_PRINT_FMT(fp_Colour, fp_FormattedString, ...) fprintf(stdout, fp_Colour fp_FormattedString STARLIGHT_COL_RESET "\n", __VA_ARGS__)
 #   define STARLIGHT_PRINT_ERROR_FMT(fp_Colour, fp_FormattedString, ...) fprintf(stderr, fp_Colour fp_FormattedString STARLIGHT_COL_RESET "\n", __VA_ARGS__)
 #else
 #   define STARLIGHT_PRINT(fp_String, fp_Colour)                   ((void)0)
 #   define STARLIGHT_PRINT_ERROR(fp_String)                        ((void)0)
 #   define STARLIGHT_PRINT_FMT(fp_Colour, fp_FormattedString, ...) ((void)0)
+#   define STARLIGHT_PRINT_ERROR_FMT(fp_Colour, fp_FormattedString, ...) ((void)0)
 #endif /*STARLIGHT_ENABLE_TERMINAL*/
 
 //================================================================================ Likely/Unlikely UwU ================================================================================//
